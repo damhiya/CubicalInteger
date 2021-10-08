@@ -7,6 +7,8 @@ open import Cubical.Foundations.Everything
 open import Cubical.Data.Nat using (ℕ; zero; suc)
 open import Cubical.HITs.S1.Base using (S¹; base; loop) renaming (ΩS¹ to ℤ)
 
+import S1Induction as S¹
+
 infixl 6 _+_
 infix 7 -_
 
@@ -36,17 +38,9 @@ private
     a : Level
     A : Type a
 
--- induction principle of S¹
-helix : ∀ {x : A} → x ≡ x → S¹ → A
-helix {x = x} p base = x
-helix p (loop i) = p i
-
-encode : ∀ (x : A) (p : A ≡ A) {e} → base ≡ e → helix p e
-encode x p q = subst (helix p) q x
-
--- induction principle of ℤ
+-- recursion principle of ℤ
 rec : ∀ (x : A) (p : A ≡ A) → ℤ → A
-rec x p n = encode x p n
+rec x p n = subst (S¹.rec p) n x
 
 ∙-path : ∀ {x : A} (p : x ≡ x) → (x ≡ x) ≡ (x ≡ x)
 ∙-path {x = x} p = isoToPath lemma
@@ -63,6 +57,9 @@ rec x p n = encode x p n
 
 _*_ : ℤ → ℤ → ℤ
 m * n = rec 0ℤ (+-path n) m
+
++-assoc : ∀ l m n → l + (m + n) ≡ (l + m) + n
++-assoc l m n = assoc l m n
 
 private
   import Cubical.Data.Int.Base as Int
