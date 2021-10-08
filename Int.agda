@@ -31,19 +31,24 @@ pos (suc n) = sucℤ (pos n)
 neg zero = 0ℤ
 neg (suc n) = predℤ (neg n)
 
+private
+  variable
+    a : Level
+    A : Type a
+
 -- induction principle of S¹
-helix : ∀ {a} {A : Type a} {x : A} → x ≡ x → S¹ → A
+helix : ∀ {x : A} → x ≡ x → S¹ → A
 helix {x = x} p base = x
 helix p (loop i) = p i
 
-code : ∀ {a} {A : Type a} (x : A) (p : A ≡ A) {e} → base ≡ e → helix p e
-code x p q = subst (helix p) q x
+encode : ∀ (x : A) (p : A ≡ A) {e} → base ≡ e → helix p e
+encode x p q = subst (helix p) q x
 
 -- induction principle of ℤ
-rec : ∀ {a} {A : Type a} (x : A) (p : A ≡ A) → ℤ → A
-rec x p n = code x p n
+rec : ∀ (x : A) (p : A ≡ A) → ℤ → A
+rec x p n = encode x p n
 
-∙-path : ∀ {a} {A : Type a} {x : A} (p : x ≡ x) → (x ≡ x) ≡ (x ≡ x)
+∙-path : ∀ {x : A} (p : x ≡ x) → (x ≡ x) ≡ (x ≡ x)
 ∙-path {x = x} p = isoToPath lemma
   where
     open Iso
